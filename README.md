@@ -12,11 +12,12 @@
 	export VPN_SERVER_IP=172.20.10.150
 	export SERVER_REAL_IP=211.159.147.17
 	export VPN_MASK=24
-	含义：
-		VPN_CLIENT_IP 客户端局域网ip
-		VPN_SERVER_IP 服务端局域网ip
-		VPN_MASK	子网掩码
-		SERVER_REAL_IP 服务端的公网ip
+含义：
+
+* VPN_CLIENT_IP 客户端局域网ip
+* VPN_SERVER_IP 服务端局域网ip
+* VPN_MASK	子网掩码
+* SERVER_REAL_IP 服务端的公网ip
 
 
 ## 架构图
