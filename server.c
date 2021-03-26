@@ -40,7 +40,7 @@ int main()
     struct sockaddr_in clnt_addr;
     socklen_t clnt_addr_size = sizeof(clnt_addr);
     int clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr, &clnt_addr_size);
-    printf("vpn client [%s] is coming.\n", inet_ntoa(clnt_addr.sin_addr.s_addr));
+    printf("vpn client [%s] is coming.\n", inet_ntoa(clnt_addr.sin_addr));
     /* Flags: IFF_TUN   - TUN device (no Ethernet headers)
      *        IFF_TAP   - TAP device
      *        IFF_NO_PI - Do not provide packet information
