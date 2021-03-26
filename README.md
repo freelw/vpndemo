@@ -1,11 +1,38 @@
 # vpn demo
-    tun.c 是服务端
-    tun_client.c 是客户端
-## 在server端
-	ip addr add 172.20.10.150/24 dev tun0
-	ip link set tun0 up
-## 在client端
-    ip addr add 172.20.10.151/24 dev tun0
-	ip link set tun0 up
-## 测试连通性
-	ping -I tun0 172.20.10.151
+## 功能
+* 将一台拥有公网ip的服务器和一台能访问公网的服务器通过tunnel连接到一个虚拟局域网中
+## 编译    
+* 直接make生成两个可执行文件 server 和 client
+## 配置ip
+* 修改vpnrc文件中的环境变量
+	export VPN_CLIENT_IP=172.20.10.151
+	export VPN_SERVER_IP=172.20.10.150
+	export SERVER_REAL_IP=211.159.147.17
+	export VPN_MASK=24
+	含义：
+		VPN_CLIENT_IP 客户端局域网ip
+		VPN_SERVER_IP 服务端局域网ip
+		VPN_MASK	子网掩码
+		SERVER_REAL_IP 服务端的公网ip
+## 架构图
+
+	+-------------------------------------+
+	|                                     |
+	|                                     |
+	|  +--------+                         |
+	|  |        |	                      |
+	|  |        |                         |
+	|  |        |                         |
+	|  | server |  <---------+            |
+	|  |        |            |            |
+	|  |        |   +------------------+  |
+	|  |        |   |        tun0      |  |
+	|  +--------+   | 172.20.10.150/24 |  |
+	|               +------------------+  |
+	|                                     |
+	|               +------------------+  |
+	|               |   nc conncet     |  |
+	|               |172.20.10.151 9001|  |
+	|               +------------------+  |
+	+-------------------------------------+
+    
