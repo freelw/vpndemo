@@ -5,7 +5,7 @@
 * 直接make生成两个可执行文件 server 和 client
 
 ## 配置ip
-####修改vpnrc文件中的环境变量
+###修改vpnrc文件中的环境变量
 
 
 	export VPN_CLIENT_IP=172.20.10.151
