@@ -21,9 +21,17 @@ int main(int argc, char *argv[])
         printf("please input server address.\n");
         return -1;
     }
-    int clnt_sock;
+    /* Flags: IFF_TUN   - TUN device (no Ethernet headers)
+     *        IFF_TAP   - TAP device
+     *        IFF_NO_PI - Do not provide packet information
+     */
+    int tun_fd = tun_alloc(IFF_TUN | IFF_NO_PI);
+    if (tun_fd < 0) {
+        perror("Allocating interface");
+        exit(1);
+    }
     struct sockaddr_in server;
-    clnt_sock = socket(AF_INET , SOCK_STREAM , 0);
+    int clnt_sock = socket(AF_INET , SOCK_STREAM , 0);
     if (clnt_sock == -1) {
         printf("Could not create socket.\n");
         exit(1);
@@ -36,15 +44,6 @@ int main(int argc, char *argv[])
         exit(1);
     }
     printf("server [%s]conneted.\n", argv[1]);
-    /* Flags: IFF_TUN   - TUN device (no Ethernet headers)
-     *        IFF_TAP   - TAP device
-     *        IFF_NO_PI - Do not provide packet information
-     */
-    int tun_fd = tun_alloc(IFF_TUN | IFF_NO_PI);
-    if (tun_fd < 0) {
-        perror("Allocating interface");
-        exit(1);
-    }
     bridge(clnt_sock, tun_fd);
     return 0;
 }
