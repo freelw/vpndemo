@@ -14,23 +14,7 @@
 #include <errno.h>
 #define max(a,b) ((a)>(b) ? (a):(b))
 
-int tun_alloc(int flags)
-{
-    struct ifreq ifr;
-    int fd, err;
-    char *clonedev = "/dev/net/tun";
-    if ((fd = open(clonedev, O_RDWR)) < 0) {
-        return fd;
-    }
-    memset(&ifr, 0, sizeof(ifr));
-    ifr.ifr_flags = flags;
-    if ((err = ioctl(fd, TUNSETIFF, (void *) &ifr)) < 0) {
-        close(fd);
-        return err;
-    }
-    printf("Open tun/tap device: %s for reading/writting...\n", ifr.ifr_name);
-    return fd;
-}
+#include "tun_alloc.h"
 
 int main(int argc, char *argv[])
 {
