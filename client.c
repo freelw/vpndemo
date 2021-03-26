@@ -21,30 +21,30 @@ int main(int argc, char *argv[])
         printf("please input server address.\n");
         return -1;
     }
-    int tun_fd;
-    /* Flags: IFF_TUN   - TUN device (no Ethernet headers)
-     *        IFF_TAP   - TAP device
-     *        IFF_NO_PI - Do not provide packet information
-     */
-    tun_fd = tun_alloc(IFF_TUN | IFF_NO_PI);
-    if (tun_fd < 0) {
-        perror("Allocating interface");
-        exit(1);
-    }
     int clnt_sock;
     struct sockaddr_in server;
     clnt_sock = socket(AF_INET , SOCK_STREAM , 0);
     if (clnt_sock == -1) {
-        printf("Could not create socket");
+        printf("Could not create socket.\n");
+        exit(1);
     }
     server.sin_addr.s_addr = inet_addr(argv[1]);
     server.sin_family = AF_INET;
     server.sin_port = htons( 1234 );
     if (connect(clnt_sock , (struct sockaddr *)&server , sizeof(server)) < 0) {
-        puts("connect error");
-        return 1;
+        printf("connect error.\n");
+        exit(1);
     }
-    printf("server conneted.\n");
+    printf("server [%s ]conneted.\n", argv[1]);
+    /* Flags: IFF_TUN   - TUN device (no Ethernet headers)
+     *        IFF_TAP   - TAP device
+     *        IFF_NO_PI - Do not provide packet information
+     */
+    int tun_fd = tun_alloc(IFF_TUN | IFF_NO_PI);
+    if (tun_fd < 0) {
+        perror("Allocating interface");
+        exit(1);
+    }
     ioctl(clnt_sock, TUNSETNOCSUM, 1); 
     ioctl(tun_fd, TUNSETNOCSUM, 1); 
     bridge(clnt_sock, tun_fd);
