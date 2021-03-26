@@ -19,6 +19,39 @@
 * VPN_MASK	子网掩码
 * SERVER_REAL_IP 服务端的公网ip
 
+## 运行方法
+先启动服务端
+
+	[root@VM-0-11-centos vpndemo]# ./start_server.sh
+	sleeping 5s...
+
+再启动客户端
+
+	[root@VM-0-15-centos vpndemo]# ./start_client.sh
+	sleeping 5s...
+
+## ping测试
+在172.20.10.151上
+
+	[root@VM-0-15-centos vpndemo]# ping 172.20.10.150
+	PING 172.20.10.150 (172.20.10.150) 56(84) bytes of data.
+	64 bytes from 172.20.10.150: icmp_seq=1 ttl=64 time=2.52 ms
+	64 bytes from 172.20.10.150: icmp_seq=2 ttl=64 time=2.57 ms
+	64 bytes from 172.20.10.150: icmp_seq=3 ttl=64 time=2.54 ms
+	64 bytes from 172.20.10.150: icmp_seq=4 ttl=64 time=2.55 ms
+
+## tcp测试
+在172.20.10.151上
+
+	[root@VM-0-15-centos vpndemo]# nc -lk 9001
+	hello
+	hi vpn demo!
+
+在172.20.10.150上
+
+	[root@VM-0-11-centos vpndemo]# nc 172.20.10.151 9001
+	hello
+	hi vpn demo!
 
 ## 架构图
 
