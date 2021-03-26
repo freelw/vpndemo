@@ -3,8 +3,10 @@
 * 将一台拥有公网ip的服务器和一台能访问公网的服务器通过tunnel连接到一个虚拟局域网中
 ## 编译    
 * 直接make生成两个可执行文件 server 和 client
+
 ## 配置ip
-* 修改vpnrc文件中的环境变量
+####修改vpnrc文件中的环境变量
+
 
 	export VPN_CLIENT_IP=172.20.10.151
 	export VPN_SERVER_IP=172.20.10.150
@@ -15,6 +17,7 @@
 		VPN_SERVER_IP 服务端局域网ip
 		VPN_MASK	子网掩码
 		SERVER_REAL_IP 服务端的公网ip
+
 
 ## 架构图
 
