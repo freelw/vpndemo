@@ -12,9 +12,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <errno.h>
-#define max(a,b) ((a)>(b) ? (a):(b))
-
 #include "tun_alloc.h"
+#include "bridge.h"
 
 int main(int argc, char *argv[])
 {
@@ -23,7 +22,6 @@ int main(int argc, char *argv[])
         return -1;
     }
     int tun_fd;
-    char buf[1500];
     /* Flags: IFF_TUN   - TUN device (no Ethernet headers)
      *        IFF_TAP   - TAP device
      *        IFF_NO_PI - Do not provide packet information
@@ -36,39 +34,19 @@ int main(int argc, char *argv[])
     int clnt_sock;
     struct sockaddr_in server;
     clnt_sock = socket(AF_INET , SOCK_STREAM , 0);
-    if (clnt_sock == -1)
-    {
+    if (clnt_sock == -1) {
         printf("Could not create socket");
     }
     server.sin_addr.s_addr = inet_addr(argv[1]);
     server.sin_family = AF_INET;
     server.sin_port = htons( 1234 );
-    if (connect(clnt_sock , (struct sockaddr *)&server , sizeof(server)) < 0)
-    {
+    if (connect(clnt_sock , (struct sockaddr *)&server , sizeof(server)) < 0) {
         puts("connect error");
         return 1;
     }
     printf("server conneted.\n");
     ioctl(clnt_sock, TUNSETNOCSUM, 1); 
     ioctl(tun_fd, TUNSETNOCSUM, 1); 
-    fd_set fds;
-    int fm = max(clnt_sock, tun_fd) + 1;
-    int l = 0;
-    while(1){
-        FD_ZERO(&fds);
-        FD_SET(clnt_sock, &fds);
-        FD_SET(tun_fd, &fds);
-        select(fm, &fds, NULL, NULL, NULL);
-        if(FD_ISSET(clnt_sock, &fds)) {
-            l = read(clnt_sock,buf,sizeof(buf));
-            printf("recieved %d bytes from vpn server.\n", l);
-            write(tun_fd,buf,l);
-        }
-        if(FD_ISSET(tun_fd, &fds)) {
-            l = read(tun_fd, buf, sizeof(buf));
-            printf("sending %d bytes to vpn server.\n", l);
-            write(clnt_sock, buf, l);
-        }
-    }
+    bridge(clnt_sock, tun_fd);
     return 0;
 }

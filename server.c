@@ -12,15 +12,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <errno.h>
-#define max(a,b) ((a)>(b) ? (a):(b))
-
 #include "tun_alloc.h"
-
+#include "bridge.h"
 
 int main()
 {
     int tun_fd;
-    char buf[1500];
     /* Flags: IFF_TUN   - TUN device (no Ethernet headers)
      *        IFF_TAP   - TAP device
      *        IFF_NO_PI - Do not provide packet information
@@ -43,26 +40,8 @@ int main()
     socklen_t clnt_addr_size = sizeof(clnt_addr);
     int clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr, &clnt_addr_size);
     printf("vpn client is coming.\n");
-    ioctl(clnt_sock, TUNSETNOCSUM, 1); 
-    ioctl(tun_fd, TUNSETNOCSUM, 1); 
-    fd_set fds;
-    int fm = max(clnt_sock, tun_fd) + 1;
-    int l = 0;
-    while(1){
-        FD_ZERO(&fds);
-        FD_SET(clnt_sock, &fds);
-        FD_SET(tun_fd, &fds);
-        select(fm, &fds, NULL, NULL, NULL);
-        if(FD_ISSET(clnt_sock, &fds)) {
-            l = read(clnt_sock,buf,sizeof(buf));
-            printf("recieved %d bytes from vpn client.\n", l);
-            write(tun_fd,buf,l);
-        }
-        if(FD_ISSET(tun_fd, &fds)) {
-            l = read(tun_fd, buf, sizeof(buf));
-            printf("sending %d bytes to vpn client.\n", l);
-            write(clnt_sock, buf, l);
-        }
-    }
+    ioctl(clnt_sock, TUNSETNOCSUM, 1);
+    ioctl(tun_fd, TUNSETNOCSUM, 1);
+    bridge(clnt_sock, tun_fd);
     return 0;
 }
