@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <errno.h>
 #include <linux/if_tun.h>
+#include <sys/ioctl.h>
 
 #define max(a,b) ((a)>(b) ? (a):(b))
 

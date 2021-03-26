@@ -50,8 +50,6 @@ int main()
         perror("Allocating interface");
         exit(1);
     }
-    ioctl(clnt_sock, TUNSETNOCSUM, 1);
-    ioctl(tun_fd, TUNSETNOCSUM, 1);
     bridge(clnt_sock, tun_fd);
     return 0;
 }
