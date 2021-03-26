@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
         printf("connect error.\n");
         exit(1);
     }
-    printf("server [%s ]conneted.\n", argv[1]);
+    printf("server [%s]conneted.\n", argv[1]);
     /* Flags: IFF_TUN   - TUN device (no Ethernet headers)
      *        IFF_TAP   - TAP device
      *        IFF_NO_PI - Do not provide packet information
@@ -45,8 +45,6 @@ int main(int argc, char *argv[])
         perror("Allocating interface");
         exit(1);
     }
-    ioctl(clnt_sock, TUNSETNOCSUM, 1); 
-    ioctl(tun_fd, TUNSETNOCSUM, 1); 
     bridge(clnt_sock, tun_fd);
     return 0;
 }

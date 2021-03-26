@@ -5,11 +5,14 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <errno.h>
+#include <linux/if_tun.h>
 
 #define max(a,b) ((a)>(b) ? (a):(b))
 
 void bridge(int fd1, int fd2)
 {
+    ioctl(fd1, TUNSETNOCSUM, 1);
+    ioctl(fd2, TUNSETNOCSUM, 1);
     char buf[1500];
     fd_set fds;
     int fm = max(fd1, fd2) + 1;
